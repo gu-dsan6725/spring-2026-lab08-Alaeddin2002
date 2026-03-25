@@ -17,6 +17,58 @@ logger = logging.getLogger(__name__)
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 
+def _compare_stocks(
+    symbol1: str,
+    symbol2: str
+) -> Dict[str, Any]:
+    """Compare two stocks side-by-side.
+
+    Args:
+        symbol1: First stock symbol (e.g., 'AAPL')
+        symbol2: Second stock symbol (e.g., 'MSFT')
+
+    Returns:
+        Dictionary with comparison data for both stocks
+    """
+    
+    
+    try:
+        first_price = _get_stock_price(symbol1)
+        second_price = _get_stock_price(symbol2)
+        if "error" in first_price:
+            return {"error": f"Error with {symbol1}: {first_price['error']}"}
+
+        if "error" in second_price:
+            return {"error": f"Error with {symbol2}: {second_price['error']}"}
+        
+        first_comp = _get_company_info(symbol1)
+        second_comp = _get_company_info(symbol2)
+
+        return{
+            "comparison": {
+            "symbol1": symbol1.upper(),
+            "symbol2": symbol2.upper(),
+            "stock1": {
+                "symbol": symbol1.upper(),
+                "current_price": first_price.get("current_price"),
+                "company_name": first_price.get("name"),
+                "market_cap": first_comp.get("market_cap")
+            },
+            "stock2": {
+                "symbol": symbol2.upper(),
+                "current_price": second_price.get("current_price"),
+                "company_name": second_price.get("name"),
+                "market_cap": second_comp.get("market_cap")
+            }
+        }
+        }
+    except Exception as e:
+        logger.error(f"Error comparing stocks {symbol1} and {symbol2}: {e}")
+        return {
+            "error": str(e),
+            "symbols": [symbol1.upper(), symbol2.upper()]
+        }
+
 
 def _load_prompt(
     filename: str
@@ -230,7 +282,26 @@ STOCK_TOOLS = [
             "required": ["ticker"]
         },
         "function": _get_company_info
-    }
+    },
+    {
+    "name": "compare_stocks",
+    "description": "Compare two stocks side-by-side including current price, company name, and market capitalization.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "symbol1": {
+                "type": "string",
+                "description": "First stock symbol to compare"
+            },
+            "symbol2": {
+                "type": "string",
+                "description": "Second stock symbol to compare"
+            }
+        },
+        "required": ["symbol1", "symbol2"]
+    },
+    "function": _compare_stocks
+}
 ]
 
 
@@ -265,3 +336,4 @@ def execute_tool_call(
     except Exception as e:
         logger.error(f"Error executing tool {tool_name}: {e}")
         return json.dumps({"error": str(e)})
+

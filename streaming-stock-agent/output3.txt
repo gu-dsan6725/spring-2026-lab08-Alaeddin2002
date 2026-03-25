@@ -1,0 +1,45 @@
+Testing /ping endpoint...
+Status: 200
+Response: {'status': 'ok'}
+
+============================================================
+MULTI-TURN CONVERSATION TEST
+============================================================
+
+Session: test_session_123
+Query: What is the current price of Apple stock?
+------------------------------------------------------------
+
+[Tool calls starting...]
+
+[Calling tool: get_stock_price with args {'ticker': 'AAPL'}]
+[Tool calls completed]
+
+The current price of Apple Inc. (AAPL) remains **$251.49** USD as of March 24, 2026 (Post-Market), with no change from the last reported price. Key details:  
+
+- **Previous Close**: $247.99  
+- **Change**: +$3.50 (1.41%)  
+
+The data is from after-hours trading ("POSTPOST" market state), and prices are delayed. Would you like to compare this with Tesla (TSLA) or explore historical trends?
+[Done]
+
+============================================================
+
+Session: test_session_123
+Query: How has it changed in the last 30 days?
+------------------------------------------------------------
+
+[Error: litellm.RateLimitError: RateLimitError: GroqException - {"error":{"message":"Rate limit reached for model `qwen/qwen3-32b` in organization `org_01kez0kerwfs1tdemyvw9trcw4` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 5510, Requested 910. Please try again in 4.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+]
+
+============================================================
+
+Session: test_session_123
+Query: What about Tesla?
+------------------------------------------------------------
+
+[Error: litellm.RateLimitError: RateLimitError: GroqException - {"error":{"message":"Rate limit reached for model `qwen/qwen3-32b` in organization `org_01kez0kerwfs1tdemyvw9trcw4` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 5503, Requested 924. Please try again in 4.27s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+]
+
+============================================================
+
